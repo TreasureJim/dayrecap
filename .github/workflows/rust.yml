@@ -28,7 +28,7 @@ jobs:
           cp target/release/dayrecap dist/dayrecap
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: my-dist
           path: dist/
