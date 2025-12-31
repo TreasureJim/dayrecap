@@ -1,0 +1,28 @@
+name: Rust
+
+on:
+  
+  push:
+    tags:
+      - "v*"
+  
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Build
+        run: cargo build --release
+
+      - name: Prepare dist directory
+        run: |
+          mkdir -p dist
+          cp target/release/dayrecap dist/dayrecap
