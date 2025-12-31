@@ -26,3 +26,9 @@ jobs:
         run: |
           mkdir -p dist
           cp target/release/dayrecap dist/dayrecap
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-dist
+          path: dist/
