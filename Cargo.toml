@@ -1,0 +1,10 @@
+[package]
+name = "dayrecap"
+version = "0.1.0"
+edition = "2024"
+description = "A notification client which prompts you to recap the the days events and log them."
+
+[dependencies]
+chrono = "0.4.42"
+clap = { version = "4.5.53", features = ["derive", "string"] }
+notify-rust = "4.11.7"
