@@ -19,12 +19,16 @@ struct Args {
     #[arg(short, long, default_value = recap_log_default_file_path().into_os_string())]
     messages_location: PathBuf,
 
-    #[arg(short, long, default_value = "vim")]
-    editor_command: String
+    #[arg(short, long, default_value = "alacritty -e nvim %p")]
+    editor_command: String,
 }
 
 fn main() {
     let args = Args::parse();
+    unsafe {
+        env::set_var("DISPLAY", ":0");
+        env::set_var("DBUS_SESSION_BUS_ADDRESS", "unix:path=/run/user/1000/bus");
+    }
 
     notify_rust::Notification::new()
         .summary("1 Hour Recap")
@@ -49,12 +53,17 @@ fn recap_log_default_file_path() -> PathBuf {
 }
 
 fn recap_msg_file_path() -> PathBuf {
-        PathBuf::new().join(RECAPMSG_FILE_PATH)
+    PathBuf::new().join(RECAPMSG_FILE_PATH)
 }
 
-fn open_editor(editor: &str, path: &Path) -> io::Result<()> {
-    Command::new(editor)
-        .arg(path.to_str().expect("Failed to parse path as string"))
+fn editor_command_sub_vars(editor_cmd: &str, path: &Path) -> String {
+    editor_cmd.replace("%p", path.to_str().expect("Failed to parse path as string"))
+}
+
+fn open_editor(editor_command: &str, path: &Path) -> io::Result<()> {
+    Command::new(format!("bash"))
+        .arg("-c")
+        .arg(editor_command_sub_vars(editor_command, path))
         .spawn()?
         .wait()?;
 
